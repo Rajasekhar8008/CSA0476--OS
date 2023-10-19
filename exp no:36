@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int abs_diff(int a, int b) {
+    return abs(a - b);
+}
+
+int sstf(int tracks[], int numTracks, int startTrack) {
+    int totalHeadMovement = 0;
+    int currentTrack = startTrack;
+
+    int* visited = (int*)calloc(numTracks, sizeof(int));
+    int visitedCount = 0;
+
+    printf("SSTF Disk Scheduling:\n");
+    printf("Sequence: ");
+
+    while (visitedCount < numTracks) {
+        int minDiff = -1;
+        int nextTrack = -1;
+
+        for (int i = 0; i < numTracks; i++) {
+            if (!visited[i]) {
+                int diff = abs_diff(currentTrack, tracks[i]);
+
+                if (minDiff == -1 || diff < minDiff) {
+                    minDiff = diff;
+                    nextTrack = i;
+                }
+            }
+        }
+
+        if (nextTrack != -1) {
+            visited[nextTrack] = 1;
+            visitedCount++;
+            totalHeadMovement += minDiff;
+            currentTrack = tracks[nextTrack];
+
+            printf("%d ", tracks[nextTrack]);
+        }
+    }
+
+    printf("\n");
+
+    free(visited);
+
+    return totalHeadMovement;
+}
+
+int main() {
+    int tracks[] = {55, 58, 60, 70, 18};
+    int numTracks = sizeof(tracks) / sizeof(tracks[0]);
+    int startTrack = 50;
+
+    printf("Tracks: ");
+    for (int i = 0; i < numTracks; i++) {
+        printf("%d ", tracks[i]);
+    }
+    printf("\n");
+
+    printf("Start Track: %d\n", startTrack);
+
+    int averageHeadMovement = sstf(tracks, numTracks, startTrack) / numTracks;
+
+    printf("Average Head Movement: %d\n", averageHeadMovement);
+
+    return 0;
+}

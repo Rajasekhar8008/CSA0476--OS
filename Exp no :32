@@ -1,0 +1,65 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+void sortTracks(int tracks[], int numTracks) {
+    int i, j, temp;
+    for (i = 0; i < numTracks - 1; i++) {
+        for (j = 0; j < numTracks - i - 1; j++) {
+            if (tracks[j] > tracks[j + 1]) {
+                temp = tracks[j];
+                tracks[j] = tracks[j + 1];
+                tracks[j + 1] = temp;
+            }
+        }
+    }
+}
+
+
+float findAverageHeadMovement(int tracks[], int numTracks, int initialTrack) {
+    sortTracks(tracks, numTracks);
+
+    int i, position, prevPosition, totalHeadMovement;
+    position = initialTrack;
+    prevPosition = position < 0 ? 0 : position;
+    totalHeadMovement = 0;
+
+    int startIdx = 0;
+    for (i = 0; i < numTracks; i++) {
+        if (tracks[i] >= position) {
+            startIdx = i;
+            break;
+        }
+    }
+
+    for (i = startIdx; i < numTracks; i++) {
+        totalHeadMovement += tracks[i] - prevPosition;
+        prevPosition = tracks[i];
+    }
+
+    totalHeadMovement += tracks[numTracks - 1] - prevPosition;
+    prevPosition = tracks[numTracks - 1];
+
+   
+    totalHeadMovement += 199 - prevPosition;
+
+    for (i = startIdx - 1; i >= 0; i--) {
+        totalHeadMovement += prevPosition - tracks[i];
+        prevPosition = tracks[i];
+    }
+
+    return (float)totalHeadMovement / numTracks;
+}
+
+int main() {
+    int tracks[] = {55, 58, 60, 70, 18, 90, 150, 160, 184};
+    int numTracks = sizeof(tracks) / sizeof(tracks[0]);
+    int initialTrack = 100;
+    float averageHeadMovement;
+
+    averageHeadMovement = findAverageHeadMovement(tracks, numTracks, initialTrack);
+
+    printf("Average head movement: %.2f\n", averageHeadMovement);
+
+    return 0;
+}

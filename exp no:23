@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_TRACKS 100
+
+void swap(int* a, int* b) {
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+void sortTracks(int tracks[], int num_tracks) {
+    for (int i = 0; i < num_tracks - 1; i++) {
+        for (int j = 0; j < num_tracks - i - 1; j++) {
+            if (tracks[j] > tracks[j + 1]) {
+                swap(&tracks[j], &tracks[j + 1]);
+            }
+        }
+    }
+}
+
+int scan(int tracks[], int num_tracks, int head_position, int direction) {
+    int total_head_movement = 0;
+    int current_track = head_position;
+    int i;
+
+    
+    for (i = 0; i < num_tracks; i++) {
+        if (tracks[i] >= current_track) {
+            break;
+        }
+    }
+
+   
+    if (direction == 1) {
+        for (; i < num_tracks; i++) {
+            total_head_movement += abs(tracks[i] - current_track);
+            current_track = tracks[i];
+        }
+        
+        total_head_movement += abs(99 - current_track);
+        current_track = 99;
+      
+        direction = -1;
+        
+        i--;
+    }
+
+   
+    if (direction == -1) {
+        for (; i >= 0; i--) {
+            total_head_movement += abs(tracks[i] - current_track);
+            current_track = tracks[i];
+        }
+    }
+
+    return total_head_movement;
+}
+
+int main() {
+    int tracks[] = {55, 58, 60, 70, 18};
+    int num_tracks = sizeof(tracks) / sizeof(tracks[0]);
+    int head_position = 50;
+    int direction = 1;
+
+    sortTracks(tracks, num_tracks);
+
+    int total_head_movement = scan(tracks, num_tracks, head_position, direction);
+    float average_head_movement = (float)total_head_movement / num_tracks;
+
+    printf("Average head movement: %.2f\n", average_head_movement);
+
+    return 0;
+}

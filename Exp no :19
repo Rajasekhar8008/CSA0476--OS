@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <semaphore.h>
+
+int shared_data = 0; // Shared data accessed by the threads
+sem_t semaphore;     // Semaphore for synchronization
+
+void *thread1(void *arg) {
+  
+    sem_wait(&semaphore);
+
+
+    int data = shared_data;
+
+    
+    printf("Thread 1: Double of shared data = %d\n", 2 * data);
+
+    
+    sem_post(&semaphore);
+
+    return NULL;
+}
+
+void *thread2(void *arg) {
+  
+    sem_wait(&semaphore);
+
+   
+    int data = shared_data;
+
+    
+    printf("Thread 2: Five times shared data = %d\n", 5 * data);
+
+   
+    sem_post(&semaphore);
+
+    return NULL;
+}
+
+int main() {
+    pthread_t t1, t2;
+
+    
+    sem_init(&semaphore, 0, 1);
+
+   
+    if (pthread_create(&t1, NULL, thread1, NULL) != 0) {
+        fprintf(stderr, "Error creating thread 1.\n");
+        return 1;
+    }
+
+    
+    if (pthread_create(&t2, NULL, thread2, NULL) != 0) {
+        fprintf(stderr, "Error creating thread 2.\n");
+        return 1;
+    }
+
+   
+    shared_data = 10;
+
+    
+    if (pthread_join(t1, NULL) != 0) {
+        fprintf(stderr, "Error joining thread 1.\n");
+        return 1;
+    }
+
+  
+    if (pthread_join(t2, NULL) != 0) {
+        fprintf(stderr, "Error joining thread 2.\n");
+        return 1;
+    }
+
+   
+    sem_destroy(&semaphore);
+
+    return 0;
+}

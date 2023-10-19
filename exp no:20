@@ -1,0 +1,62 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_PARTITIONS 6
+#define MAX_PROCESSES 5
+
+typedef struct {
+    int partition_size;
+    bool allocated;
+} Partition;
+
+typedef struct {
+    int process_size;
+    bool allocated;
+} Process;
+
+void worstFit(Partition partitions[], int num_partitions, Process processes[], int num_processes) {
+    for (int i = 0; i < num_processes; i++) {
+        int worst_fit_index = -1;
+        
+        for (int j = 0; j < num_partitions; j++) {
+            if (!partitions[j].allocated && partitions[j].partition_size >= processes[i].process_size) {
+                if (worst_fit_index == -1 || partitions[j].partition_size > partitions[worst_fit_index].partition_size) {
+                    worst_fit_index = j;
+                }
+            }
+        }
+        
+        if (worst_fit_index != -1) {
+            partitions[worst_fit_index].allocated = true;
+            processes[i].allocated = true;
+            printf("Process of size %d KB is allocated to partition of size %d KB\n",
+                    processes[i].process_size, partitions[worst_fit_index].partition_size);
+        } else {
+            printf("Unable to allocate process of size %d KB\n", processes[i].process_size);
+        }
+    }
+}
+
+int main() {
+    Partition partitions[MAX_PARTITIONS] = {
+        {300, false},
+        {600, false},
+        {350, false},
+        {200, false},
+        {750, false},
+        {125, false}
+    };
+
+    Process processes[MAX_PROCESSES] = {
+        {115, false},
+        {500, false},
+        {358, false},
+        {200, false},
+        {375, false}
+    };
+    
+    printf("Worst-Fit Memory Allocation:\n");
+    worstFit(partitions, MAX_PARTITIONS, processes, MAX_PROCESSES);
+    
+    return 0;
+}

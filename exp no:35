@@ -1,0 +1,60 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define DISK_SIZE 16
+#define INODE_BLOCKS 8
+#define MIN_FILE_SIZE 1
+
+int disk[DISK_SIZE] = {0};
+
+bool isBlockFree(int blockNum) {
+    if (blockNum >= INODE_BLOCKS && blockNum < DISK_SIZE && disk[blockNum] == 0) {
+        return true;
+    }
+    return false;
+}
+
+bool allocateBlocks(int startBlock, int numBlocks) {
+    if (startBlock < INODE_BLOCKS || startBlock + numBlocks > DISK_SIZE) {
+        return false;
+    }
+
+    for (int i = startBlock; i < startBlock + numBlocks; i++) {
+        if (!isBlockFree(i)) {
+            return false;
+        }
+    }
+
+    for (int i = startBlock; i < startBlock + numBlocks; i++) {
+        disk[i] = 1;
+    }
+
+    return true;
+}
+
+void printDiskStatus() {
+    printf("Disk Status:\n");
+    for (int i = 0; i < DISK_SIZE; i++) {
+        printf("Block %d: %s\n", i, isBlockFree(i) ? "Free" : "Occupied");
+    }
+}
+
+int main() {
+    int startBlock, numBlocks;
+
+    printf("Enter the start block number for the file (8 to 15): ");
+    scanf("%d", &startBlock);
+
+    printf("Enter the number of blocks required for the file: ");
+    scanf("%d", &numBlocks);
+
+    if (numBlocks < MIN_FILE_SIZE || !allocateBlocks(startBlock, numBlocks)) {
+        printf("Not enough contiguous blocks available for the file.\n");
+        return 1;
+    }
+
+    printf("File allocated successfully.\n");
+    printDiskStatus();
+
+    return 0;
+}

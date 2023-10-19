@@ -1,0 +1,56 @@
+#include <stdio.h>
+
+#define TOTAL_BLOCKS 100
+
+
+int calculateContiguousIO(char allocationMethod, int position) {
+    if (allocationMethod != 'c')
+        return -1; 
+
+    if (position == 1)
+        return 0; 
+
+    return 1; 
+}
+
+
+int calculateLinkedIO(char allocationMethod, int position) {
+    if (allocationMethod != 'l')
+        return -1; 
+
+    return 1; 
+}
+
+
+int calculateIndexedIO(char allocationMethod, int position) {
+    if (allocationMethod != 'i')
+        return -1; 
+
+    if (position == 1)
+        return 1; 
+
+    if (position == TOTAL_BLOCKS)
+        return 1; 
+
+    return 2;
+}
+
+int main() {
+    char allocationMethod = 'c'; // 'c' for contiguous, 'l' for linked, 'i' for indexed
+    int position = 1; // 1 for adding at the beginning, 50 for adding in the middle, 100 for adding at the end
+
+    int contiguousIO = calculateContiguousIO(allocationMethod, position);
+    int linkedIO = calculateLinkedIO(allocationMethod, position);
+    int indexedIO = calculateIndexedIO(allocationMethod, position);
+
+    if (contiguousIO == -1 || linkedIO == -1 || indexedIO == -1) {
+        printf("Invalid allocation method. Please choose 'c' for contiguous, 'l' for linked, or 'i' for indexed.\n");
+    } else {
+        printf("Number of disk I/O operations required:\n");
+        printf("Contiguous allocation: %d\n", contiguousIO);
+        printf("Linked allocation: %d\n", linkedIO);
+        printf("Indexed allocation: %d\n", indexedIO);
+    }
+
+    return 0;
+}

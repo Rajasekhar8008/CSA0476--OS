@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX_FRAMES 3
+#define MAX_PAGES 8
+
+int pageFrames[MAX_FRAMES];
+int pageReferences[MAX_PAGES];
+
+bool isPagePresent(int page) {
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        if (pageFrames[i] == page) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int getOptimalPage(int startIndex) {
+    int index = -1;
+    int farthest = startIndex;
+
+    for (int i = 0; i < MAX_FRAMES; i++) {
+        int j;
+        for (j = startIndex; j < MAX_PAGES; j++) {
+            if (pageFrames[i] == pageReferences[j]) {
+                if (j > farthest) {
+                    farthest = j;
+                    index = i;
+                }
+                break;
+            }
+        }
+        if (j == MAX_PAGES) {
+            return i;
+        }
+    }
+
+    return (index == -1) ? 0 : index;
+}
+
+int optimalPageReplacement(int numPages) {
+    int pageFaults = 0;
+
+    for (int i = 0; i < numPages; i++) {
+        if (!isPagePresent(pageReferences[i])) {
+            int index = getOptimalPage(i + 1);
+            pageFrames[index] = pageReferences[i];
+            pageFaults++;
+        }
+    }
+
+    return pageFaults;
+}
+
+int main() {
+    int numPageFrames = MAX_FRAMES;
+    int numPageReferences = MAX_PAGES;
+
+    printf("Page Reference Sequence: ");
+    for (int i = 0; i < numPageReferences; i++) {
+        scanf("%d", &pageReferences[i]);
+    }
+
+    int pageFaults = optimalPageReplacement(numPageReferences);
+
+    printf("Number of Page Faults: %d\n", pageFaults);
+
+    return 0;
+}

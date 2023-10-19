@@ -1,0 +1,35 @@
+#include <stdio.h>
+#include <stdint.h>
+
+#define BLOCK_SIZE 8192 // 8 KB
+#define POINTER_SIZE 4 // 4 bytes
+#define DIRECT_BLOCKS 12
+#define SINGLE_INDIRECT_BLOCKS (BLOCK_SIZE / POINTER_SIZE)
+#define DOUBLE_INDIRECT_BLOCKS (BLOCK_SIZE / POINTER_SIZE * BLOCK_SIZE / POINTER_SIZE)
+#define TRIPLE_INDIRECT_BLOCKS (BLOCK_SIZE / POINTER_SIZE * BLOCK_SIZE / POINTER_SIZE * BLOCK_SIZE / POINTER_SIZE)
+
+uint64_t calculateMaxFileSize() {
+    uint64_t maxFileSize = 0;
+    
+    
+    maxFileSize += (uint64_t)DIRECT_BLOCKS * BLOCK_SIZE;
+    
+    
+    maxFileSize += (uint64_t)SINGLE_INDIRECT_BLOCKS * BLOCK_SIZE;
+    
+    
+    maxFileSize += (uint64_t)DOUBLE_INDIRECT_BLOCKS * BLOCK_SIZE * BLOCK_SIZE;
+    
+  
+    maxFileSize += (uint64_t)TRIPLE_INDIRECT_BLOCKS * BLOCK_SIZE * BLOCK_SIZE * BLOCK_SIZE;
+    
+    return maxFileSize;
+}
+
+int main() {
+    uint64_t maxFileSize = calculateMaxFileSize();
+    
+    printf("Maximum size of a file that can be stored: %llu bytes\n", maxFileSize);
+    
+    return 0;
+}

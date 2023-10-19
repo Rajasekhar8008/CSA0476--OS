@@ -1,0 +1,30 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int abs_diff(int a, int b) {
+    return abs(a - b);
+}
+
+int main() {
+    int no_of_tracks = 9;
+    int track_position[] = {55, 58, 60, 70, 18, 90, 150, 160, 184};
+    int current_position, next_position;
+    int total_head_movement = 0;
+
+    printf("Enter the current head position: ");
+    scanf("%d", &current_position);
+
+    printf("Scheduling Order: %d", current_position);
+
+    for (int i = 0; i < no_of_tracks; i++) {
+        next_position = track_position[i];
+        printf(" -> %d", next_position);
+        total_head_movement += abs_diff(current_position, next_position);
+        current_position = next_position;
+    }
+
+    printf("\n\nTotal head movement: %d\n", total_head_movement);
+    printf("Average head movement: %.2f\n", (float)total_head_movement / no_of_tracks);
+
+    return 0;
+}

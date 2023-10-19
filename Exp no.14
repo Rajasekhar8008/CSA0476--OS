@@ -1,0 +1,68 @@
+#include <stdio.h>
+
+#define MAX_PAGES 100
+
+int main() {
+    int page_frames;
+    printf("Enter the number of page frames: ");
+    scanf("%d", &page_frames);
+
+    int page_reference[MAX_PAGES];
+    int page_faults = 0;
+    int num_pages = 0;
+
+    printf("Enter the page reference sequence (terminate with -1):\n");
+    while (1) {
+        int page;
+        scanf("%d", &page);
+        if (page == -1) {
+            break;
+        }
+        page_reference[num_pages++] = page;
+    }
+
+    int page_table[page_frames];
+    for (int i = 0; i < page_frames; i++) {
+        page_table[i] = -1; // initialize page table with empty frames
+    }
+
+    for (int i = 0; i < num_pages; i++) {
+        int page = page_reference[i];
+
+        
+        int in_page_table = 0;
+        for (int j = 0; j < page_frames; j++) {
+            if (page_table[j] == page) {
+                in_page_table = 1;
+                break;
+            }
+        }
+
+        if (!in_page_table) {
+            
+            int replace_page_index = -1;
+            int max_future_index = -1;
+            for (int j = 0; j < page_frames; j++) {
+                int future_index = num_pages;
+                for (int k = i + 1; k < num_pages; k++) {
+                    if (page_reference[k] == page_table[j]) {
+                        future_index = k;
+                        break;
+                    }
+                }
+                if (future_index > max_future_index) {
+                    max_future_index = future_index;
+                    replace_page_index = j;
+                }
+            }
+
+            
+            page_table[replace_page_index] = page;
+            page_faults++;
+        }
+    }
+
+    printf("Total number of page faults: %d\n", page_faults);
+
+    return 0;
+}
